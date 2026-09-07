@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5"/>
+  <meta name="theme-color" content="#050505"/>
+  <meta name="description" content="AJ Assistant — Voice-first AI for Desktop, Mobile & Devices. Cloud & Local."/>
+  <title>AJ Assistant — Voice Assistant for Desktop, Mobile & Devices</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+/* ============================================================
+   AJ ASSISTANT — style.css  (Full Upgraded Version)
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#00f0ff;
+  --blue-dim:#00b8cc;
+  --blue-glow:rgba(0,240,255,.35);
+  --blue-glow-soft:rgba(0,240,255,.12);
+  --bg:#050505;
+  --surface:#0d0d0d;
+  --surface2:#111;
+  --border:rgba(0,240,255,.18);
+  --text:#fff;
+  --text-muted:rgba(255,255,255,.55);
+  --text-dim:rgba(255,255,255,.3);
+  --font:'Space Grotesk','Inter',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;height:auto}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--blue-dim);border-radius:3px}
+::selection{background:var(--blue);color:#000}
+
+/* ─── SCROLL PROGRESS BAR ─── */
+.scroll-progress{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--blue),#7b5cff);
+  z-index:2000;
+  box-shadow:0 0 10px var(--blue-glow);
+  transition:width .05s linear;
+}
+
+/* ─── CUSTOM CURSOR ─── */
+.cursor-dot{
+  position:fixed;width:8px;height:8px;
+  background:var(--blue);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 12px var(--blue),0 0 24px var(--blue-glow);
+  transition:transform .08s ease;
+}
+.cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:1.5px solid rgba(0,240,255,.5);
+  border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,border-color .2s,transform .12s ease;
+}
+.cursor-ring.hovered{width:56px;height:56px;border-color:var(--blue)}
+.cursor-dot.clicking{transform:translate(-50%,-50%) scale(.5)}
+
+/* ─── NAVBAR ─── */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(5,5,5,.85);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(0,240,255,.07);
+  transition:background .3s,border-color .3s;
+}
+.navbar.scrolled{background:rgba(5,5,5,.97);border-bottom-color:var(--border)}
+.nav-inner{max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;gap:28px}
+.nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-icon{width:28px;height:28px;filter:drop-shadow(0 0 7px var(--blue));animation:logoSpin .6s ease}
+@keyframes logoSpin{from{transform:rotate(-90deg) scale(.5);opacity:0}to{transform:rotate(0) scale(1);opacity:1}}
+.logo-text{font-size:15px;font-weight:700;letter-spacing:.04em;color:var(--blue);text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1}
+.nav-links a{padding:6px 10px;font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);border-radius:6px;transition:color .2s,background .2s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:var(--blue);background:rgba(0,240,255,.07)}
+.nav-cta{flex-shrink:0;padding:9px 20px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:1.5px solid var(--blue);border-radius:50px;color:var(--blue);transition:background .2s,color .2s,box-shadow .2s}
+.nav-cta:hover{background:var(--blue);color:#000;box-shadow:0 0 22px var(--blue-glow)}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:var(--blue);border-radius:2px;transition:transform .3s,opacity .3s}
+
+/* ─── HERO ─── */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:80px 24px 60px}
+.grid-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.particles-container{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.particle{
+  position:absolute;width:3px;height:3px;background:var(--blue);border-radius:50%;
+  box-shadow:0 0 6px var(--blue);
+  animation:floatUp linear infinite;
+  opacity:0;
+}
+@keyframes floatUp{
+  0%{transform:translateY(100vh) scale(0);opacity:0}
+  10%{opacity:.7}
+  90%{opacity:.4}
+  100%{transform:translateY(-20vh) scale(1.5);opacity:0}
+}
+.hero-glow{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:700px;height:500px;
+  background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(0,240,255,.22) 0%,rgba(0,240,255,.06) 45%,transparent 75%);
+  pointer-events:none;z-index:1;
+  animation:glowPulse 4s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)}50%{opacity:.7;transform:translate(-50%,-50%) scale(1.08)}}
+.hero-content{position:relative;z-index:2;max-width:900px;animation:heroIn 1s ease both}
+@keyframes heroIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* India badge */
+.india-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 16px;margin-bottom:16px;
+  background:linear-gradient(135deg,rgba(255,153,51,.1),rgba(19,136,8,.1));
+  border:1px solid rgba(255,153,51,.3);border-radius:50px;
+  font-size:11px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.8);
+  backdrop-filter:blur(8px);
+}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;padding:7px 18px;
+  border:1px solid var(--border);border-radius:50px;
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--blue);background:rgba(0,240,255,.06);margin-bottom:28px;backdrop-filter:blur(8px);
+}
+.badge-dot{width:7px;height:7px;background:var(--blue);border-radius:50%;animation:blink 1.2s ease infinite;box-shadow:0 0 6px var(--blue)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.hero-title{line-height:1;margin-bottom:28px}
+.hero-meet{
+  display:block;font-size:clamp(72px,14vw,160px);font-weight:900;
+  letter-spacing:-.03em;color:#fff;
+  animation:titleSlide .9s .2s both;
+}
+.hero-name{
+  display:block;font-size:clamp(48px,10vw,120px);font-weight:900;
+  letter-spacing:-.03em;color:#000;
+  -webkit-text-stroke:2px var(--blue);
+  text-shadow:0 0 40px var(--blue),0 0 80px rgba(0,240,255,.4);
+  animation:titleSlide .9s .35s both;
+}
+@keyframes titleSlide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Glitch animation */
+.glitch{animation:glitchAnim .4s steps(1) both}
+@keyframes glitchAnim{
+  0%{clip-path:inset(0 0 90% 0);transform:translate(-4px,0);color:var(--blue)}
+  20%{clip-path:inset(30% 0 50% 0);transform:translate(4px,0);color:#ff00ff}
+  40%{clip-path:inset(60% 0 20% 0);transform:translate(-3px,0);color:var(--blue)}
+  60%{clip-path:inset(10% 0 70% 0);transform:translate(3px,0);color:#fff}
+  80%{clip-path:inset(80% 0 5% 0);transform:translate(-2px,0)}
+  100%{clip-path:inset(0 0 0 0);transform:translate(0,0);color:inherit}
+}
+
+.hero-sub{max-width:600px;margin:0 auto 40px;font-size:clamp(14px,2vw,17px);color:var(--text-muted);line-height:1.7;animation:heroIn 1s .5s both}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:56px;animation:heroIn 1s .65s both}
+
+.btn-primary{
+  display:inline-flex;align-items:center;gap:10px;padding:14px 28px;
+  background:var(--blue);color:#000;font-weight:800;font-size:13px;
+  letter-spacing:.05em;text-transform:uppercase;border-radius:8px;cursor:pointer;
+  transition:box-shadow .25s,transform .2s;position:relative;overflow:hidden;
+}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.3),transparent 70%);transform:translateX(-100%);transition:transform .5s}
+.btn-primary:hover::after{transform:translateX(100%)}
+.btn-primary:hover{box-shadow:0 0 30px var(--blue-glow),0 4px 20px rgba(0,0,0,.4);transform:translateY(-2px)}
+.btn-large{padding:16px 36px;font-size:15px}
+
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:10px;padding:14px 28px;
+  background:transparent;color:#fff;font-weight:700;font-size:13px;
+  letter-spacing:.05em;text-transform:uppercase;border-radius:8px;
+  border:1.5px solid rgba(255,255,255,.2);cursor:pointer;
+  transition:border-color .25s,color .25s,background .25s;
+}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);background:rgba(0,240,255,.05)}
+.btn-tag{font-size:10px;font-weight:600;letter-spacing:.06em;opacity:.7;text-transform:uppercase;border-left:1px solid rgba(0,0,0,.3);padding-left:10px}
+.btn-secondary .btn-tag{border-left-color:rgba(255,255,255,.2)}
+
+.hero-specs{
+  display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;
+  padding:20px 32px;background:rgba(255,255,255,.03);
+  border:1px solid rgba(0,240,255,.1);border-radius:12px;backdrop-filter:blur(10px);
+  animation:heroIn 1s .8s both;
+}
+.spec-item{display:flex;flex-direction:column;align-items:center;padding:8px 28px}
+.spec-val{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px}
+.spec-key{font-size:13px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--blue)}
+.spec-divider{width:1px;height:36px;background:rgba(0,240,255,.15)}
+
+.scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);z-index:2}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--blue),transparent);margin:0 auto;animation:scrollPulse 2s ease infinite}
+@keyframes scrollPulse{0%{transform:scaleY(0);transform-origin:top;opacity:0}50%{transform:scaleY(1);transform-origin:top;opacity:1}100%{transform:scaleY(0);transform-origin:bottom;opacity:0}}
+
+/* ─── DEMO SECTION ─── */
+.demo-section{
+  padding:100px 24px;max-width:1100px;margin:0 auto;text-align:center;
+}
+.demo-sub{font-size:16px;color:var(--text-muted);margin-bottom:56px}
+.demo-box{
+  display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:start;
+  text-align:left;
+}
+
+/* Terminal */
+.demo-terminal{
+  background:#080808;border:1px solid rgba(0,240,255,.2);border-radius:14px;overflow:hidden;
+  box-shadow:0 0 40px rgba(0,240,255,.07);
+}
+.terminal-header{
+  display:flex;align-items:center;gap:8px;padding:12px 16px;
+  background:#0d0d0d;border-bottom:1px solid rgba(255,255,255,.05);
+}
+.t-dot{width:11px;height:11px;border-radius:50%}
+.t-dot.red{background:#ff5f57}
+.t-dot.yellow{background:#febc2e}
+.t-dot.teal{background:#28c840}
+.t-title{flex:1;text-align:center;font-size:11px;font-weight:600;color:var(--text-dim);letter-spacing:.06em}
+.terminal-body{padding:20px;min-height:200px;font-family:'Courier New',monospace}
+.t-line{display:flex;gap:8px;margin-bottom:10px;font-size:13px;line-height:1.6}
+.t-prompt{color:var(--blue);font-weight:700;flex-shrink:0}
+.t-out{color:rgba(255,255,255,.8);word-break:break-word}
+.t-blink{color:var(--blue);animation:blink .8s step-end infinite}
+.t-success{color:#28c840}
+.t-info{color:rgba(255,255,255,.5);font-size:11px}
+
+/* Mic button */
+.demo-controls{display:flex;flex-direction:column;align-items:center;gap:20px;padding:20px 0}
+.mic-btn{
+  position:relative;width:80px;height:80px;border-radius:50%;
+  background:var(--blue);border:none;cursor:pointer;color:#000;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 20px var(--blue-glow);
+  transition:transform .2s,box-shadow .2s;
+}
+.mic-btn:hover{transform:scale(1.08);box-shadow:0 0 35px var(--blue-glow)}
+.mic-btn.listening{background:#ff4444;box-shadow:0 0 30px rgba(255,68,68,.5)}
+.mic-btn.listening .mic-ring{animation-play-state:running}
+.mic-icon{width:32px;height:32px;position:relative;z-index:1}
+.mic-rings{position:absolute;inset:0;border-radius:50%}
+.mic-ring{
+  position:absolute;inset:-10px;border-radius:50%;
+  border:2px solid var(--blue);opacity:0;
+  animation:micPulse 1.5s ease infinite;animation-play-state:paused;
+}
+.mic-ring.r1{animation-delay:0s}
+.mic-ring.r2{animation-delay:.4s;inset:-20px}
+.mic-ring.r3{animation-delay:.8s;inset:-30px}
+@keyframes micPulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.3);opacity:0}}
+
+.mic-label{font-size:13px;color:var(--text-muted);font-weight:600;letter-spacing:.04em}
+
+/* Demo waveform */
+.demo-waveform{
+  display:flex;align-items:center;gap:3px;height:40px;opacity:.3;
+  transition:opacity .3s;
+}
+.demo-waveform.active{opacity:1}
+.demo-waveform span{
+  width:4px;background:var(--blue);border-radius:2px;height:20%;
+  animation:demoWave .8s ease infinite;box-shadow:0 0 4px var(--blue);
+}
+.demo-waveform span:nth-child(1){animation-delay:0s}
+.demo-waveform span:nth-child(2){animation-delay:.05s}
+.demo-waveform span:nth-child(3){animation-delay:.1s}
+.demo-waveform span:nth-child(4){animation-delay:.15s}
+.demo-waveform span:nth-child(5){animation-delay:.2s}
+.demo-waveform span:nth-child(6){animation-delay:.25s}
+.demo-waveform span:nth-child(7){animation-delay:.3s}
+.demo-waveform span:nth-child(8){animation-delay:.2s}
+.demo-waveform span:nth-child(9){animation-delay:.15s}
+.demo-waveform span:nth-child(10){animation-delay:.1s}
+.demo-waveform span:nth-child(11){animation-delay:.05s}
+.demo-waveform span:nth-child(12){animation-delay:0s}
+.demo-waveform span:nth-child(13){animation-delay:.08s}
+.demo-waveform span:nth-child(14){animation-delay:.16s}
+.demo-waveform span:nth-child(15){animation-delay:.24s}
+@keyframes demoWave{0%,100%{height:20%}50%{height:100%}}
+
+.demo-commands{width:100%;text-align:left}
+.dc-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+.dc-chips{display:flex;flex-wrap:wrap;gap:8px}
+.dc-chip{
+  padding:6px 14px;font-size:12px;font-weight:600;
+  background:rgba(0,240,255,.06);border:1px solid rgba(0,240,255,.2);
+  border-radius:50px;color:var(--text-muted);cursor:pointer;
+  transition:background .2s,color .2s,border-color .2s;font-family:var(--font);
+}
+.dc-chip:hover{background:rgba(0,240,255,.15);color:var(--blue);border-color:var(--blue)}
+
+/* ─── ABOUT SECTION ─── */
+.about-section{
+  position:relative;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;overflow:hidden;padding:80px 24px 0;
+}
+.about-grid-bg{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,240,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.07) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 70% 70% at 50% 40%,black 0%,transparent 80%);
+  -webkit-mask-image:radial-gradient(ellipse 70% 70% at 50% 40%,black 0%,transparent 80%);
+  z-index:0;
+}
+.about-content{position:relative;z-index:2;text-align:center;max-width:900px;margin-bottom:24px}
+.about-title{line-height:.95;letter-spacing:-.03em;margin-bottom:32px}
+.at-white{display:block;font-size:clamp(60px,13vw,150px);font-weight:900;color:#fff}
+.at-dark{
+  display:block;font-size:clamp(50px,11vw,130px);font-weight:900;color:#000;
+  -webkit-text-stroke:2px var(--blue);
+  text-shadow:0 0 60px rgba(0,240,255,.5),0 0 120px rgba(0,240,255,.2);
+}
+.about-desc{font-size:clamp(15px,2vw,18px);color:var(--text-muted);line-height:1.7;max-width:680px;margin:0 auto}
+
+.section-tag{
+  display:inline-flex;align-items:center;margin-bottom:40px;padding:6px 16px;
+  border:1px solid var(--border);border-radius:50px;font-size:10px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--blue);background:rgba(0,240,255,.05);
+  position:relative;z-index:2;
+}
+
+/* ─── STACK MARQUEE ─── */
+.stack-section{width:100%;padding:60px 0 0;position:relative;z-index:2}
+.stack-label{text-align:center;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin-bottom:32px}
+.stack-marquee{
+  width:100%;overflow:hidden;padding:20px 0;
+  mask-image:linear-gradient(90deg,transparent 0%,black 10%,black 90%,transparent 100%);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,black 10%,black 90%,transparent 100%);
+}
+.stack-track{display:flex;align-items:center;gap:48px;width:max-content;animation:marqueeScroll 30s linear infinite}
+@keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.stack-track:hover{animation-play-state:paused}
+.stack-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.75);font-size:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);transition:border-color .2s,color .2s,filter .2s;flex-shrink:0}
+.stack-icon:hover{border-color:var(--blue);color:var(--blue);filter:drop-shadow(0 0 6px var(--blue))}
+.stack-icon img{width:24px;height:24px;object-fit:contain;filter:brightness(0) invert(1)}
+.stack-text,.stack-text-mono{font-family:monospace;font-weight:900;font-size:14px}
+.stack-text-plain{font-family:var(--font);font-size:12px;font-weight:700;border-radius:8px;width:64px}
+.stack-circle{font-size:18px;font-weight:900;font-family:var(--font)}
+
+/* ─── MOBILE SECTION ─── */
+.mobile-section{padding:100px 24px 0;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:60px}
+.mobile-content{text-align:center;max-width:700px}
+.mobile-title{font-size:clamp(32px,6vw,60px);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:20px}
+.blue-text{color:var(--blue)}
+.mobile-desc{font-size:16px;color:var(--text-muted);line-height:1.7}
+.mobile-visual{position:relative;display:flex;align-items:center;justify-content:center}
+.mobile-glow{position:absolute;inset:-40px;background:radial-gradient(circle,rgba(0,240,255,.18) 0%,transparent 70%);z-index:0;animation:glowPulse 3s ease infinite}
+.phone-mockup{position:relative;z-index:1;width:220px;height:440px;background:#0a0a0a;border-radius:36px;border:2px solid rgba(0,240,255,.4);box-shadow:0 0 40px rgba(0,240,255,.15),0 0 80px rgba(0,240,255,.05),inset 0 0 20px rgba(0,240,255,.04);overflow:hidden;display:flex;flex-direction:column}
+.phone-screen{flex:1;display:flex;flex-direction:column;padding:16px 14px;background:#080808}
+.phone-header{display:flex;justify-content:center;padding-bottom:12px}
+.phone-camera{width:10px;height:10px;background:#222;border-radius:50%;border:1px solid #333}
+.phone-ui{display:flex;flex-direction:column;gap:12px}
+.phone-status-bar{display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.1em}
+.status-dot{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:blink 1s infinite}
+.phone-wave-container{padding:8px 0}
+.phone-waveform{display:flex;align-items:flex-end;gap:3px;height:28px;justify-content:center}
+.wave-bar{width:4px;background:var(--blue);border-radius:2px;animation:waveBounce .8s ease infinite;box-shadow:0 0 4px var(--blue)}
+.wave-bar:nth-child(1){height:40%;animation-delay:0s}
+.wave-bar:nth-child(2){height:80%;animation-delay:.1s}
+.wave-bar:nth-child(3){height:55%;animation-delay:.2s}
+.wave-bar:nth-child(4){height:100%;animation-delay:.15s}
+.wave-bar:nth-child(5){height:60%;animation-delay:.05s}
+.wave-bar:nth-child(6){height:85%;animation-delay:.25s}
+.wave-bar:nth-child(7){height:45%;animation-delay:.1s}
+.wave-bar:nth-child(8){height:70%;animation-delay:.3s}
+.wave-bar:nth-child(9){height:35%;animation-delay:.2s}
+@keyframes waveBounce{0%,100%{transform:scaleY(.3);opacity:.5}50%{transform:scaleY(1);opacity:1}}
+.phone-command{font-size:11px;font-family:monospace;color:var(--blue);padding:6px 8px;background:rgba(0,240,255,.05);border-radius:6px;border:1px solid rgba(0,240,255,.1);min-height:28px;display:flex;align-items:center;gap:4px;overflow:hidden}
+.cmd-prompt{opacity:.5}
+.cmd-cursor{animation:blink 1s infinite;font-weight:100}
+.phone-notifs{display:flex;flex-direction:column;gap:8px}
+.notif-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.06)}
+.notif-icon{font-size:14px}
+.notif-body{flex:1}
+.notif-app{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.notif-msg{font-size:10px;color:rgba(255,255,255,.7)}
+.phone-btn{width:60px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:10px auto}
+.mobile-marquee{width:100%;overflow:hidden;border-top:1px solid rgba(0,240,255,.1);border-bottom:1px solid rgba(0,240,255,.1);padding:16px 0;mask-image:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%)}
+.m-track{display:flex;gap:60px;width:max-content;animation:marqueeScroll 20s linear infinite}
+.m-track span{font-size:13px;font-weight:800;letter-spacing:.3em;text-transform:uppercase;color:rgba(0,240,255,.5);white-space:nowrap}
+
+/* ─── FEATURES ─── */
+.features-section{padding:100px 24px;max-width:1200px;margin:0 auto;text-align:center}
+.section-title{font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:60px}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.feat-card{
+  background:var(--surface);border:1px solid rgba(0,240,255,.1);border-radius:14px;padding:32px 28px;text-align:left;
+  transition:border-color .25s,transform .25s,box-shadow .25s;cursor:default;
+  animation:fadeSlideUp .6s ease both;
+}
+/* staggered via JS */
+.feat-card:hover{border-color:rgba(0,240,255,.45);transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,240,255,.07)}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.feat-icon{font-size:28px;margin-bottom:16px}
+.feat-card h3{font-size:16px;font-weight:700;margin-bottom:10px;color:#fff}
+.feat-card p{font-size:14px;color:var(--text-muted);line-height:1.6}
+
+/* ─── SOCIAL PROOF ─── */
+.social-proof{
+  overflow:hidden;border-top:1px solid rgba(0,240,255,.08);border-bottom:1px solid rgba(0,240,255,.08);
+  padding:16px 0;background:rgba(0,240,255,.02);
+  mask-image:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);
+}
+.sp-track{display:flex;gap:80px;width:max-content;animation:marqueeScroll 40s linear infinite}
+.sp-track span{font-size:13px;color:var(--text-muted);white-space:nowrap;font-weight:500}
+
+/* ─── PRICING ─── */
+.pricing-section{padding:80px 24px;max-width:900px;margin:0 auto;text-align:center}
+.pricing-big{font-size:clamp(48px,11vw,120px);font-weight:900;letter-spacing:-.03em;line-height:.9;margin-bottom:28px}
+.pricing-sub{font-size:16px;color:var(--text-muted);max-width:600px;margin:0 auto 36px;line-height:1.7}
+.pricing-notice{background:var(--surface);border:1px solid rgba(0,240,255,.15);border-radius:12px;padding:24px 28px;margin-bottom:36px;text-align:left;display:flex;flex-direction:column;gap:14px}
+.notice-row{display:flex;gap:12px;font-size:13px;color:var(--text-muted);align-items:flex-start}
+.notice-row strong{color:#fff}
+.notice-icon{flex-shrink:0}
+.pricing-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+.pricing-card{display:flex;align-items:center;gap:14px;padding:22px 24px;background:var(--surface);border:1px solid rgba(0,240,255,.15);border-radius:12px;transition:border-color .25s,box-shadow .25s}
+.pricing-card:hover{border-color:var(--blue);box-shadow:0 0 24px rgba(0,240,255,.12)}
+.pc-icon{font-size:22px}
+.pc-info{flex:1;text-align:left}
+.pc-title{font-size:15px;font-weight:700;color:#fff}
+.pc-sub{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim)}
+.pc-arrow{font-size:18px;color:var(--blue)}
+
+/* payment methods */
+.payment-methods{text-align:center}
+.pm-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px}
+.pm-icons{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.pm-badge{
+  padding:8px 18px;background:var(--surface);border:1px solid rgba(0,240,255,.15);
+  border-radius:8px;font-size:12px;font-weight:700;color:var(--text-muted);
+  letter-spacing:.04em;transition:border-color .2s,color .2s;
+}
+.pm-badge:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ─── DOWNLOAD ─── */
+.download-section{position:relative;padding:120px 24px;text-align:center;overflow:hidden}
+.dl-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(0,240,255,.14) 0%,transparent 70%);pointer-events:none;z-index:0}
+.dl-content{position:relative;z-index:1;max-width:700px;margin:0 auto}
+.dl-title{font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:20px}
+.dl-desc{font-size:16px;color:var(--text-muted);line-height:1.7;margin-bottom:40px}
+
+/* ─── FOOTER ─── */
+.footer{background:var(--surface);border-top:1px solid rgba(0,240,255,.1);padding:72px 24px 36px}
+.footer-top{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-logo{margin-bottom:16px}
+.footer-tagline{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px}
+.footer-desc{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:24px}
+.footer-socials{display:flex;gap:12px}
+.footer-socials a{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.12);border-radius:50%;color:var(--text-muted);transition:border-color .2s,color .2s}
+.footer-socials a svg{width:16px;height:16px}
+.footer-socials a:hover{border-color:var(--blue);color:var(--blue)}
+.footer-col h5{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:18px}
+.footer-col a{display:block;font-size:13px;color:var(--text-muted);padding:4px 0;transition:color .2s}
+.footer-col a:hover{color:var(--blue)}
+.status-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);margin-bottom:12px}
+.status-green-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;box-shadow:0 0 6px var(--blue);animation:blink 2s ease infinite}
+.status-badge{margin-left:auto;font-size:10px;font-weight:700;padding:3px 10px;background:rgba(0,240,255,.1);color:var(--blue);border-radius:50px;letter-spacing:.06em}
+.version-row{display:flex;flex-direction:column;gap:4px}
+.version-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim)}
+.version-val{font-size:12px;color:var(--blue);font-weight:600}
+.footer-bottom{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-top:24px;border-top:1px solid rgba(255,255,255,.05);font-size:12px;color:var(--text-dim)}
+.footer-bottom a{color:var(--blue)}
+
+/* ─── WHATSAPP BUTTON ─── */
+.whatsapp-btn{
+  position:fixed;bottom:28px;right:28px;z-index:900;
+  width:58px;height:58px;border-radius:50%;background:#25d366;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;box-shadow:0 4px 20px rgba(37,211,102,.4);
+  transition:transform .25s,box-shadow .25s;
+}
+.whatsapp-btn svg{width:28px;height:28px}
+.whatsapp-btn:hover{transform:scale(1.12);box-shadow:0 6px 30px rgba(37,211,102,.6)}
+.wa-tooltip{
+  position:absolute;right:68px;top:50%;transform:translateY(-50%);
+  background:#111;color:#fff;font-size:12px;font-weight:600;
+  padding:6px 12px;border-radius:8px;white-space:nowrap;opacity:0;
+  pointer-events:none;transition:opacity .2s;border:1px solid rgba(255,255,255,.1);
+}
+.whatsapp-btn:hover .wa-tooltip{opacity:1}
+
+/* ─── REVEAL ANIMATION ─── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:64px;left:0;right:0;background:rgba(5,5,5,.98);border-bottom:1px solid var(--border);padding:20px 24px;gap:4px;z-index:999}
+  .nav-links.open a{font-size:14px;padding:10px}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .demo-box{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .hero-specs{flex-direction:column;gap:0}
+  .spec-divider{width:60px;height:1px}
+  .pricing-cards{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .hero-btns{flex-direction:column;align-items:center}
+  .btn-primary,.btn-secondary{width:100%;max-width:320px;justify-content:center}
+  body{cursor:auto}
+  .cursor-dot,.cursor-ring{display:none}
+}
+
+
+/* ─── HIDDEN UTILITY ─── */
+.hidden{display:none!important}
+.code-block{background:#0a0a0a;border:1px solid rgba(0,240,255,.15);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:12px;color:rgba(255,255,255,.7);line-height:2;margin-top:12px}
+.c-g{color:var(--blue)}
+.hl{color:var(--blue)}
+.blue-link{color:var(--blue);text-decoration:underline}
+
+/* ─── INSTALL SECTION ─── */
+.install-section{padding:100px 24px;max-width:1100px;margin:0 auto;text-align:center}
+.install-sub{font-size:16px;color:var(--text-muted);margin-bottom:48px;max-width:600px;margin-left:auto;margin-right:auto}
+.platform-tabs{display:flex;justify-content:center;gap:8px;margin-bottom:48px;flex-wrap:wrap}
+.ptab{padding:10px 24px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:transparent;border:1.5px solid rgba(0,240,255,.2);border-radius:8px;color:var(--text-muted);cursor:pointer;transition:all .2s;font-family:var(--font)}
+.ptab:hover{border-color:var(--blue);color:var(--blue)}
+.ptab.active{background:var(--blue);color:#000;border-color:var(--blue);box-shadow:0 0 20px var(--blue-glow)}
+.install-content{text-align:left;display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:start}
+.install-steps{display:flex;flex-direction:column;gap:0}
+.install-step{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.install-step:last-child{border-bottom:none}
+.step-num{font-size:36px;font-weight:900;color:rgba(0,240,255,.15);letter-spacing:-.02em;flex-shrink:0;width:48px;line-height:1;margin-top:4px}
+.step-body h4{font-size:15px;font-weight:700;color:#fff;margin-bottom:8px}
+.step-body p{font-size:14px;color:var(--text-muted);line-height:1.6}
+.step-body code{background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.15);border-radius:4px;padding:2px 7px;font-size:12px;color:var(--blue);font-family:monospace}
+.step-body strong{color:#fff}
+.step-body em{color:var(--blue);font-style:normal;font-weight:600}
+.install-req{background:var(--surface);border:1px solid rgba(0,240,255,.12);border-radius:14px;padding:28px}
+.install-req h4{font-size:14px;font-weight:700;color:var(--blue);margin-bottom:20px;text-transform:uppercase;letter-spacing:.1em}
+.req-grid{display:flex;flex-direction:column;gap:12px}
+.req-item{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.req-item:last-child{border-bottom:none}
+.req-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);width:90px;flex-shrink:0;margin-top:2px}
+.req-val{font-size:13px;color:var(--text-muted)}
+
+/* ─── GUIDE SECTION ─── */
+.guide-section{padding:100px 24px;max-width:1200px;margin:0 auto;text-align:center}
+.guide-sub{font-size:16px;color:var(--text-muted);margin-bottom:60px;max-width:600px;margin-left:auto;margin-right:auto}
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;text-align:left;margin-bottom:60px}
+.guide-card{background:var(--surface);border:1px solid rgba(0,240,255,.1);border-radius:14px;padding:28px;transition:border-color .25s,transform .2s}
+.guide-card:hover{border-color:rgba(0,240,255,.35);transform:translateY(-3px)}
+.gc-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.gc-num{font-size:28px;font-weight:900;color:rgba(0,240,255,.2);line-height:1}
+.gc-header h3{font-size:15px;font-weight:700;color:#fff}
+.guide-card p{font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:14px}
+.guide-card strong.hl{font-weight:700}
+.cmd-example{font-family:'Courier New',monospace;font-size:12px;color:rgba(255,255,255,.6);background:rgba(0,240,255,.04);border:1px solid rgba(0,240,255,.1);border-radius:6px;padding:8px 12px}
+.voice-commands-box{background:var(--surface);border:1px solid rgba(0,240,255,.15);border-radius:16px;padding:36px;text-align:left}
+.voice-commands-box h3{font-size:18px;font-weight:700;margin-bottom:28px;color:#fff}
+.vc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+.vc-item{display:flex;flex-direction:column;gap:4px;padding:14px;background:rgba(0,240,255,.03);border:1px solid rgba(0,240,255,.08);border-radius:10px}
+.vc-cmd{font-family:'Courier New',monospace;font-size:12px;color:var(--blue);font-weight:600}
+.vc-desc{font-size:12px;color:var(--text-muted)}
+
+/* ─── DOCS SECTION ─── */
+.docs-section{padding:100px 24px;max-width:1200px;margin:0 auto;text-align:center}
+.docs-sub{font-size:16px;color:var(--text-muted);margin-bottom:56px;max-width:600px;margin-left:auto;margin-right:auto}
+.docs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;text-align:left;margin-bottom:60px}
+.doc-card{display:flex;flex-direction:column;background:var(--surface);border:1px solid rgba(0,240,255,.1);border-radius:14px;padding:28px;transition:border-color .25s,transform .2s,box-shadow .2s}
+.doc-card:hover{border-color:rgba(0,240,255,.4);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,240,255,.07)}
+.doc-icon{font-size:28px;margin-bottom:14px}
+.doc-card h4{font-size:15px;font-weight:700;color:#fff;margin-bottom:8px}
+.doc-card p{font-size:13px;color:var(--text-muted);line-height:1.6;flex:1;margin-bottom:16px}
+.doc-link{font-size:12px;font-weight:700;color:var(--blue);letter-spacing:.04em;text-transform:uppercase}
+.docs-changelog{background:var(--surface);border:1px solid rgba(0,240,255,.12);border-radius:14px;padding:32px;text-align:left}
+.docs-changelog h3{font-size:16px;font-weight:700;margin-bottom:24px;color:#fff}
+.changelog-list{display:flex;flex-direction:column;gap:0}
+.cl-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:14px}
+.cl-item:last-child{border-bottom:none}
+.cl-ver{font-family:monospace;font-size:12px;font-weight:700;color:var(--blue);width:56px;flex-shrink:0}
+.cl-badge{padding:3px 10px;border-radius:50px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;flex-shrink:0}
+.cl-badge.new{background:rgba(0,240,255,.12);color:var(--blue)}
+.cl-badge.fix{background:rgba(255,200,0,.12);color:#ffc800}
+.cl-text{color:var(--text-muted)}
+
+/* ─── POLICIES SECTION ─── */
+.policies-section{padding:100px 24px;max-width:900px;margin:0 auto;text-align:center}
+.policy-tabs{display:flex;justify-content:center;gap:8px;margin-bottom:40px;flex-wrap:wrap}
+.pol-tab{padding:9px 20px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:transparent;border:1.5px solid rgba(0,240,255,.2);border-radius:8px;color:var(--text-muted);cursor:pointer;transition:all .2s;font-family:var(--font)}
+.pol-tab:hover{border-color:var(--blue);color:var(--blue)}
+.pol-tab.active{background:var(--blue);color:#000;border-color:var(--blue)}
+.policy-content{text-align:left}
+.policy-box{background:var(--surface);border:1px solid rgba(0,240,255,.12);border-radius:16px;padding:40px}
+.pol-updated{font-size:12px;color:var(--text-dim);margin-bottom:28px;font-style:italic}
+.pol-section{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.05)}
+.pol-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.pol-section h4{font-size:15px;font-weight:700;color:var(--blue);margin-bottom:10px}
+.pol-section p{font-size:14px;color:var(--text-muted);line-height:1.7}
+.pol-section strong{color:#fff}
+.pol-section code{background:rgba(0,240,255,.08);border-radius:4px;padding:2px 7px;font-size:12px;color:var(--blue);font-family:monospace}
+
+/* ─── SUPPORT SECTION ─── */
+.support-section{padding:100px 24px;max-width:1200px;margin:0 auto;text-align:center}
+.support-sub{font-size:16px;color:var(--text-muted);margin-bottom:60px;max-width:500px;margin-left:auto;margin-right:auto}
+.support-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:40px;text-align:left;align-items:start}
+.support-channels h3,.faq-box h3{font-size:18px;font-weight:700;color:#fff;margin-bottom:24px}
+.channel-cards{display:flex;flex-direction:column;gap:14px}
+.channel-card{display:flex;gap:16px;align-items:flex-start;padding:20px;background:var(--surface);border:1px solid rgba(0,240,255,.12);border-radius:12px;transition:border-color .25s,transform .2s}
+.channel-card:hover{border-color:var(--blue);transform:translateX(4px)}
+.channel-card.wa{border-color:rgba(37,211,102,.3)}
+.channel-card.wa:hover{border-color:#25d366}
+.ch-icon{font-size:24px;flex-shrink:0;margin-top:2px}
+.ch-body h4{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px}
+.ch-body p{font-size:13px;color:var(--text-muted);line-height:1.5;margin-bottom:8px}
+.ch-badge{font-size:11px;font-weight:700;color:var(--blue);letter-spacing:.04em}
+.faq-list{display:flex;flex-direction:column;gap:0}
+.faq-item{border-bottom:1px solid rgba(255,255,255,.06)}
+.faq-q{width:100%;text-align:left;padding:16px 0;font-size:14px;font-weight:600;color:rgba(255,255,255,.8);background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:var(--font);gap:12px;transition:color .2s}
+.faq-q::after{content:'+';font-size:20px;color:var(--blue);flex-shrink:0;transition:transform .3s}
+.faq-q.open{color:var(--blue)}
+.faq-q.open::after{transform:rotate(45deg)}
+.faq-a{font-size:13px;color:var(--text-muted);line-height:1.7;padding-bottom:16px;display:none}
+.faq-a.open{display:block}
+
+/* ─── JOIN SECTION ─── */
+.join-section{padding:100px 24px;max-width:1200px;margin:0 auto;text-align:center}
+.join-sub{font-size:16px;color:var(--text-muted);margin-bottom:60px;max-width:600px;margin-left:auto;margin-right:auto}
+.join-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;text-align:left;margin-bottom:60px}
+.join-card{background:var(--surface);border:1px solid rgba(0,240,255,.12);border-radius:16px;padding:32px;transition:border-color .25s,transform .2s}
+.join-card:hover{border-color:rgba(0,240,255,.35);transform:translateY(-4px)}
+.join-card.beta{border-color:rgba(0,240,255,.25);background:linear-gradient(135deg,var(--surface),rgba(0,240,255,.04))}
+.jc-tag{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+.join-card h3{font-size:18px;font-weight:700;color:#fff;margin-bottom:12px}
+.join-card p{font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:20px}
+.join-card strong{color:var(--blue)}
+.join-form{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.join-input{flex:1;min-width:160px;padding:12px 16px;background:rgba(0,0,0,.4);border:1px solid rgba(0,240,255,.2);border-radius:8px;color:#fff;font-size:14px;font-family:var(--font);outline:none;transition:border-color .2s}
+.join-input:focus{border-color:var(--blue)}
+.join-small{font-size:11px;color:var(--text-dim)}
+.join-stats{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;padding:32px;background:rgba(0,240,255,.03);border:1px solid rgba(0,240,255,.1);border-radius:16px}
+.stat-item{display:flex;flex-direction:column;align-items:center;padding:12px 40px}
+.stat-num{font-size:clamp(28px,4vw,40px);font-weight:900;color:var(--blue);letter-spacing:-.02em}
+.stat-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:4px}
+.stat-divider{width:1px;height:50px;background:rgba(0,240,255,.15)}
+
+/* ─── EXTRA RESPONSIVE ─── */
+@media(max-width:900px){
+  .install-content{grid-template-columns:1fr}
+  .support-grid{grid-template-columns:1fr}
+  .stat-item{padding:12px 20px}
+}
+@media(max-width:640px){
+  .install-content{grid-template-columns:1fr}
+  .vc-grid{grid-template-columns:1fr}
+  .join-grid{grid-template-columns:1fr}
+  .stat-divider{width:60px;height:1px}
+  .join-stats{flex-direction:column}
+  .platform-tabs{flex-direction:column;align-items:center}
+  .ptab{width:100%;max-width:280px}
+}
+
+</style>
+</head>
+<body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo">
+        <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+          <rect x="4" y="4" width="24" height="24" rx="6" stroke="#00f0ff" stroke-width="2"/>
+          <circle cx="16" cy="16" r="5" fill="#00f0ff"/>
+          <circle cx="16" cy="16" r="2" fill="#050505"/>
+          <line x1="16" y1="4" x2="16" y2="9" stroke="#00f0ff" stroke-width="2"/>
+          <line x1="16" y1="23" x2="16" y2="28" stroke="#00f0ff" stroke-width="2"/>
+          <line x1="4" y1="16" x2="9" y2="16" stroke="#00f0ff" stroke-width="2"/>
+          <line x1="23" y1="16" x2="28" y2="16" stroke="#00f0ff" stroke-width="2"/>
+        </svg>
+        <span class="logo-text">AJ Assistant</span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#install">How-to-Install</a>
+        <a href="#guide">Guide</a>
+        <a href="#docs">Docs</a>
+        <a href="#policies">Policies</a>
+        <a href="#support">Support</a>
+        <a href="#join">Join Us</a>
+      </div>
+      <a href="#download" class="nav-cta">Download AJ</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero" id="home">
+    <canvas class="grid-canvas" id="gridCanvas"></canvas>
+    <div id="particlesContainer" class="particles-container"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><span class="badge-dot"></span>Native Voice Control</div>
+      <h1 class="hero-title">
+        <span class="hero-meet" id="scrambleMeet">MEET</span>
+        <span class="hero-name" id="scrambleName">AJ Assistant.</span>
+      </h1>
+      <p class="hero-sub">A true system-level intelligence. AJ Assistant bypasses the browser to read your screen, manage your local files, and execute complex desktop workflows entirely hands-free.</p>
+      <div class="hero-btns">
+        <a href="#download" class="btn-primary">Download AJ<span class="btn-tag">Early Access</span></a>
+        <a href="#pricing" class="btn-secondary">Get AJ Pro<span class="btn-tag">Only 2000</span></a>
+      </div>
+      <div class="hero-specs">
+        <div class="spec-item"><span class="spec-val">Wake Word</span><span class="spec-key">Offline</span></div>
+        <div class="spec-divider"></div>
+        <div class="spec-item"><span class="spec-val">Execution</span><span class="spec-key">Real-Time</span></div>
+        <div class="spec-divider"></div>
+        <div class="spec-item"><span class="spec-val">Integration</span><span class="spec-key">Native OS</span></div>
+        <div class="spec-divider"></div>
+        <div class="spec-item"><span class="spec-val">Memory</span><span class="spec-key">Persistent</span></div>
+      </div>
+    </div>
+    <div class="scroll-hint"><div class="scroll-line"></div></div>
+  </section>
+
+  <!-- ═══ ABOUT ═══ -->
+  <section class="about-section" id="about">
+    <div class="section-tag"><span>⚙️ THE STORY BEHIND THE SOFTWARE</span></div>
+    <div class="about-grid-bg"></div>
+    <div class="about-content">
+      <h2 class="about-title">
+        <span class="at-white" id="glitchMeet">MEET</span><br/>
+        <span class="at-dark">AJ Assistant.</span>
+      </h2>
+      <p class="about-desc">A true system-level intelligence. AJ Assistant bypasses the browser to read your screen, manage your local files, and execute complex desktop workflows entirely hands-free.</p>
+    </div>
+    <div class="stack-section">
+      <p class="stack-label">BUILT WITH A BLEEDING-EDGE MODERN STACK</p>
+      <div class="stack-marquee">
+        <div class="stack-track">
+          <div class="stack-icon" title="Gemini">✦</div>
+          <div class="stack-icon" title="Ollama"><img src="https://cdn.simpleicons.org/ollama/ffffff" alt="Ollama"/></div>
+          <div class="stack-icon stack-text" title="Anthropic">A\</div>
+          <div class="stack-icon" title="OpenAI"><img src="https://cdn.simpleicons.org/openai/ffffff" alt="OpenAI"/></div>
+          <div class="stack-icon" title="Hugging Face">🤗</div>
+          <div class="stack-icon stack-text-plain" title="Tavily">Tavily</div>
+          <div class="stack-icon" title="React"><img src="https://cdn.simpleicons.org/react/ffffff" alt="React"/></div>
+          <div class="stack-icon stack-circle" title="Next.js">N</div>
+          <div class="stack-icon" title="Node.js"><img src="https://cdn.simpleicons.org/nodedotjs/ffffff" alt="Node.js"/></div>
+          <div class="stack-icon stack-text-mono" title="Express">ex</div>
+          <div class="stack-icon" title="Socket.io"><img src="https://cdn.simpleicons.org/socketdotio/ffffff" alt="Socket.io"/></div>
+          <div class="stack-icon" title="Electron"><img src="https://cdn.simpleicons.org/electron/ffffff" alt="Electron"/></div>
+          <div class="stack-icon" title="Framer"><img src="https://cdn.simpleicons.org/framer/ffffff" alt="Framer"/></div>
+          <div class="stack-icon" title="Python"><img src="https://cdn.simpleicons.org/python/ffffff" alt="Python"/></div>
+          <div class="stack-icon" title="Gemini">✦</div>
+          <div class="stack-icon" title="Ollama"><img src="https://cdn.simpleicons.org/ollama/ffffff" alt="Ollama"/></div>
+          <div class="stack-icon stack-text" title="Anthropic">A\</div>
+          <div class="stack-icon" title="OpenAI"><img src="https://cdn.simpleicons.org/openai/ffffff" alt="OpenAI"/></div>
+          <div class="stack-icon" title="Hugging Face">🤗</div>
+          <div class="stack-icon stack-text-plain" title="Tavily">Tavily</div>
+          <div class="stack-icon" title="React"><img src="https://cdn.simpleicons.org/react/ffffff" alt="React"/></div>
+          <div class="stack-icon stack-circle" title="Next.js">N</div>
+          <div class="stack-icon" title="Node.js"><img src="https://cdn.simpleicons.org/nodedotjs/ffffff" alt="Node.js"/></div>
+          <div class="stack-icon stack-text-mono" title="Express">ex</div>
+          <div class="stack-icon" title="Socket.io"><img src="https://cdn.simpleicons.org/socketdotio/ffffff" alt="Socket.io"/></div>
+          <div class="stack-icon" title="Electron"><img src="https://cdn.simpleicons.org/electron/ffffff" alt="Electron"/></div>
+          <div class="stack-icon" title="Framer"><img src="https://cdn.simpleicons.org/framer/ffffff" alt="Framer"/></div>
+          <div class="stack-icon" title="Python"><img src="https://cdn.simpleicons.org/python/ffffff" alt="Python"/></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MOBILE ═══ -->
+  <section class="mobile-section" id="mobile">
+    <div class="mobile-content">
+      <h2 class="mobile-title">Total command over your<br/><span class="blue-text">Mobile Device.</span></h2>
+      <p class="mobile-desc">Read notifications, push files, and launch Android applications directly from your desktop.</p>
+    </div>
+    <div class="mobile-visual">
+      <div class="phone-mockup">
+        <div class="phone-screen">
+          <div class="phone-header"><div class="phone-camera"></div></div>
+          <div class="phone-ui">
+            <div class="phone-status-bar"><span>AJ Assistant</span><span class="status-dot"></span></div>
+            <div class="phone-wave-container">
+              <div class="phone-waveform">
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              </div>
+            </div>
+            <div class="phone-command"><span class="cmd-prompt">&gt;</span><span class="cmd-text" id="cmdText"></span><span class="cmd-cursor">|</span></div>
+            <div class="phone-notifs">
+              <div class="notif-item"><div class="notif-icon">📩</div><div class="notif-body"><div class="notif-app">Messages</div><div class="notif-msg">New message from AJ</div></div></div>
+              <div class="notif-item"><div class="notif-icon">📁</div><div class="notif-body"><div class="notif-app">Files</div><div class="notif-msg">report.pdf synced</div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-btn"></div>
+      </div>
+      <div class="mobile-glow"></div>
+    </div>
+    <div class="mobile-marquee">
+      <div class="m-track">
+        <span>AJ ASSISTANT</span><span>AJ ASSISTANT</span><span>AJ ASSISTANT</span>
+        <span>AJ ASSISTANT</span><span>AJ ASSISTANT</span><span>AJ ASSISTANT</span>
+        <span>AJ ASSISTANT</span><span>AJ ASSISTANT</span><span>AJ ASSISTANT</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURES ═══ -->
+  <section class="features-section" id="features">
+    <div class="section-tag"><span>⚡ CAPABILITIES</span></div>
+    <h2 class="section-title">Everything you need.<br/><span class="blue-text">Nothing you don't.</span></h2>
+    <div class="features-grid">
+      <div class="feat-card"><div class="feat-icon">🎙️</div><h3>Wake Word Detection</h3><p>Always-on offline wake word. Say "Hey AJ" and take command without touching a key.</p></div>
+      <div class="feat-card"><div class="feat-icon">🖥️</div><h3>Screen Intelligence</h3><p>AJ reads your screen in real-time and understands context — no browser extension needed.</p></div>
+      <div class="feat-card"><div class="feat-icon">📂</div><h3>File Management</h3><p>Move, rename, search, and organize files across your entire system using natural speech.</p></div>
+      <div class="feat-card"><div class="feat-icon">🤖</div><h3>Hybrid AI Engine</h3><p>Switch between cloud models (GPT-4o, Claude, Gemini) and local Ollama models on the fly.</p></div>
+      <div class="feat-card"><div class="feat-icon">📱</div><h3>Mobile Sync</h3><p>Bridge your phone and desktop. Read notifications, push files, open apps — all by voice.</p></div>
+      <div class="feat-card"><div class="feat-icon">🧠</div><h3>Persistent Memory</h3><p>AJ remembers your preferences, projects, and workflows across every session.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══ SOCIAL PROOF ═══ -->
+  <div class="social-proof">
+    <div class="sp-track">
+      <span>⭐ "Best AI tool I've used" — Rahul, Bangalore</span>
+      <span>⭐ "Works flawlessly in Hindi" — Priyanka, Mumbai</span>
+      <span>⭐ "Like Jarvis for real" — Arjun, Delhi</span>
+      <span>⭐ "Bhai ye toh next level hai" — Devang, Pune</span>
+      <span>⭐ "Replaced 4 apps with just AJ" — Shruti, Hyderabad</span>
+      <span>⭐ "Best AI tool I've used" — Rahul, Bangalore</span>
+      <span>⭐ "Works flawlessly in Hindi" — Vivek, Ahmedabad</span>
+      <span>⭐ "Like Jarvis for real" — Chintan, US</span>
+      <span>⭐ "Bhai ye toh next level hai" — Dev, Chennai</span>
+      <span>⭐ "Replaced 4 apps with just AJ" — Sneha, India</span>
+    </div>
+  </div>
+
+  <!-- ═══ PRICING ═══ -->
+  <section class="pricing-section" id="pricing">
+    <div class="section-tag"><span>💳 LICENSING</span></div>
+    <h2 class="pricing-big">SELECT<br/><span class="blue-text">YOUR PLATFORM</span></h2>
+    <p class="pricing-sub">Choose the platform architecture you wish to license. More platforms and pricing options will be rolling out soon.</p>
+    <div class="pricing-notice">
+      <div class="notice-row"><span class="notice-icon">🔑</span><span><strong>Direct Account Upgrade:</strong> As soon as you click payment, log in with your email. This email is crucial as it is directly upgraded to PRO. No license key needed!</span></div>
+      <div class="notice-row"><span class="notice-icon">✉️</span><span><strong>Payment Successful Email:</strong> A confirmation receipt is sent to your inbox. Check your Spam / Junk folder if delayed.</span></div>
+    </div>
+    <div class="pricing-cards">
+      <a href="#" class="pricing-card"><div class="pc-icon">💳</div><div class="pc-info"><div class="pc-title">View Pricing</div><div class="pc-sub">SELECT LICENSE</div></div><div class="pc-arrow">→</div></a>
+      <a href="#" class="pricing-card"><div class="pc-icon">⚙️</div><div class="pc-info"><div class="pc-title">Custom AI</div><div class="pc-sub">ENTERPRISE BUILD</div></div><div class="pc-arrow">→</div></a>
+    </div>
+    <div class="payment-methods">
+      <p class="pm-label">We accept</p>
+      <div class="pm-icons">
+        <div class="pm-badge">UPI</div>
+        <div class="pm-badge">Razorpay</div>
+        <div class="pm-badge">Paytm</div>
+        <div class="pm-badge">💳 Card</div>
+        <div class="pm-badge">NetBanking</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HOW TO INSTALL ═══ -->
+  <section class="install-section" id="install">
+    <div class="section-tag"><span>📦 SETUP</span></div>
+    <h2 class="section-title">How to <span class="blue-text">Install AJ.</span></h2>
+    <p class="install-sub">Get AJ Assistant running on your system in under 3 minutes. Choose your platform below.</p>
+
+    <!-- Platform tabs -->
+    <div class="platform-tabs">
+      <button class="ptab active" data-tab="windows">🪟 Windows</button>
+      <button class="ptab" data-tab="mac">🍎 macOS</button>
+      <button class="ptab" data-tab="linux">🐧 Linux</button>
+    </div>
+
+    <div class="install-content" id="tab-windows">
+      <div class="install-steps">
+        <div class="install-step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h4>Download the Installer</h4>
+            <p>Click the button below to download <code>AJ-Assistant-Setup.exe</code> for Windows 10 / 11 (64-bit).</p>
+            <a href="#" class="btn-primary" style="margin-top:14px;display:inline-flex">⬇ Download for Windows<span class="btn-tag">v1.0.0</span></a>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h4>Run the Installer</h4>
+            <p>Double-click <code>AJ-Assistant-Setup.exe</code>. If Windows SmartScreen appears, click <strong>More info → Run anyway</strong>. Follow the on-screen wizard.</p>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h4>Grant Microphone Access</h4>
+            <p>Windows will ask for microphone permission on first launch. Click <strong>Allow</strong>. AJ needs mic access for wake-word detection.</p>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <h4>Sign In &amp; Activate</h4>
+            <p>Log in with your email. Free tier activates automatically. If you purchased PRO, your account upgrades instantly — no license key needed.</p>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">05</div>
+          <div class="step-body">
+            <h4>Say "Hey AJ"</h4>
+            <p>AJ runs in the system tray. Say <em>"Hey AJ"</em> from anywhere on your desktop to activate. You're live. 🚀</p>
+          </div>
+        </div>
+      </div>
+      <div class="install-req">
+        <h4>System Requirements</h4>
+        <div class="req-grid">
+          <div class="req-item"><span class="req-label">OS</span><span class="req-val">Windows 11 PRO (64-bit)</span></div>
+          <div class="req-item"><span class="req-label">PC/ Laptop</span><span class="req-val">Required Gaming </span></div>
+          <div class="req-item"><span class="req-label">RAM</span><span class="req-val">16 GB minimum </span></div>
+          <div class="req-item"><span class="req-label">Storage</span><span class="req-val">200 GB free space</span></div>
+          <div class="req-item"><span class="req-label">Graphics Card</span><span class="req-val">Required Graphics Card </span></div>
+          <div class="req-item"><span class="req-label">Internet</span><span class="req-val">Required for cloud AI (offline mode available)</span></div>
+          <div class="req-item"><span class="req-label">Microphone</span><span class="req-val">Built-in or external mic</span></div>
+          <div class="req-item"><span class="req-label">Node.js</span><span class="req-val">v18+ (bundled with installer)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="install-content hidden" id="tab-mac">
+      <div class="install-steps">
+        <div class="install-step"><div class="step-num">01</div><div class="step-body"><h4>Download the DMG</h4><p>Download <code>AJ-Assistant.dmg</code> for macOS 12 Monterey or later (Apple Silicon &amp; Intel).</p><a href="#" class="btn-primary" style="margin-top:14px;display:inline-flex">⬇ Download for macOS<span class="btn-tag">v1.0.0</span></a></div></div>
+        <div class="install-step"><div class="step-num">02</div><div class="step-body"><h4>Open &amp; Drag to Applications</h4><p>Open the <code>.dmg</code> file and drag <strong>AJ Assistant</strong> into your <strong>Applications</strong> folder.</p></div></div>
+        <div class="install-step"><div class="step-num">03</div><div class="step-body"><h4>Allow in Security Settings</h4><p>Go to <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong> if macOS blocks the app. This is a one-time step.</p></div></div>
+        <div class="install-step"><div class="step-num">04</div><div class="step-body"><h4>Grant Microphone &amp; Accessibility</h4><p>Allow microphone and accessibility permissions when prompted — both are needed for voice control and screen reading.</p></div></div>
+        <div class="install-step"><div class="step-num">05</div><div class="step-body"><h4>Say "Hey AJ"</h4><p>AJ lives in your menu bar. Say <em>"Hey AJ"</em> to wake it up from anywhere. 🚀</p></div></div>
+      </div>
+      <div class="install-req">
+        <h4>System Requirements</h4>
+        <div class="req-grid">
+          <div class="req-item"><span class="req-label">OS</span><span class="req-val">macOS 12 Monterey or later</span></div>
+          <div class="req-item"><span class="req-label">Chip</span><span class="req-val">Apple Silicon (M1/M2/M3) or Intel</span></div>
+          <div class="req-item"><span class="req-label">RAM</span><span class="req-val">8 GB minimum</span></div>
+          <div class="req-item"><span class="req-label">Storage</span><span class="req-val">400 MB free space</span></div>
+          <div class="req-item"><span class="req-label">Microphone</span><span class="req-val">Built-in or external</span></div>
+          <div class="req-item"><span class="req-label">Internet</span><span class="req-val">Required for cloud AI</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="install-content hidden" id="tab-linux">
+      <div class="install-steps">
+        <div class="install-step"><div class="step-num">01</div><div class="step-body"><h4>Download the AppImage</h4><p>Download <code>AJ-Assistant.AppImage</code> for Ubuntu 20.04+ / Debian-based systems.</p><a href="#" class="btn-primary" style="margin-top:14px;display:inline-flex">⬇ Download for Linux<span class="btn-tag">v1.0.0</span></a></div></div>
+        <div class="install-step"><div class="step-num">02</div><div class="step-body"><h4>Make Executable &amp; Run</h4><p>Open terminal in the download folder and run:</p><div class="code-block"><span class="c-g">chmod +x</span> AJ-Assistant.AppImage<br/><span class="c-g">./</span>AJ-Assistant.AppImage</div></div></div>
+        <div class="install-step"><div class="step-num">03</div><div class="step-body"><h4>Install PulseAudio / ALSA</h4><p>Ensure your audio stack is working: <code>sudo apt install pulseaudio</code></p></div></div>
+        <div class="install-step"><div class="step-num">04</div><div class="step-body"><h4>Sign In &amp; Activate</h4><p>Log in with your email on first launch. PRO accounts upgrade automatically.</p></div></div>
+        <div class="install-step"><div class="step-num">05</div><div class="step-body"><h4>Say "Hey AJ"</h4><p>AJ runs as a system tray app. Say <em>"Hey AJ"</em> to activate from anywhere. 🚀</p></div></div>
+      </div>
+      <div class="install-req">
+        <h4>System Requirements</h4>
+        <div class="req-grid">
+          <div class="req-item"><span class="req-label">OS</span><span class="req-val">Ubuntu 20.04+ / Debian / Arch</span></div>
+          <div class="req-item"><span class="req-label">RAM</span><span class="req-val">16 GB minimum</span></div>
+          <div class="req-item"><span class="req-label">Storage</span><span class="req-val">100 GB free</span></div>
+          <div class="req-item"><span class="req-label">Audio</span><span class="req-val">PulseAudio or ALSA</span></div>
+          <div class="req-item"><span class="req-label">Node.js</span><span class="req-val">v18+ required</span></div>
+          <div class="req-item"><span class="req-label">Python</span><span class="req-val">3.10+ for local AI models</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ GUIDE ═══ -->
+  <section class="guide-section" id="guide">
+    <div class="section-tag"><span>📖 USAGE GUIDE</span></div>
+    <h2 class="section-title">How to use <span class="blue-text">AJ Assistant.</span></h2>
+    <p class="guide-sub">Master AJ in minutes. Here's everything you need to know to get the most out of your AI assistant.</p>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <div class="gc-header"><span class="gc-num">01</span><h3>Waking AJ Up</h3></div>
+        <p>Say <strong class="hl">"Hey AJ"</strong> from anywhere on your desktop. AJ is always listening in the background. You'll hear a soft chime and see the waveform animate — AJ is ready.</p>
+        <div class="cmd-example"><span class="c-g">&gt;</span> "Hey AJ, open my project folder"</div>
+      </div>
+      <div class="guide-card">
+        <div class="gc-header"><span class="gc-num">02</span><h3>File &amp; Folder Control</h3></div>
+        <p>AJ has full read/write access to your file system. Create folders, move files, rename documents, search by content — all by voice.</p>
+        <div class="cmd-example"><span class="c-g">&gt;</span> "Move all PDFs from Downloads to Work folder"</div>
+      </div>
+      <div class="guide-card">
+        <div class="gc-header"><span class="gc-num">03</span><h3>Screen Reading</h3></div>
+        <p>AJ can see your screen. Point it at any window and ask questions about what's on screen — emails, code, documents, spreadsheets.</p>
+        <div class="cmd-example"><span class="c-g">&gt;</span> "Read this email and summarise the key points"</div>
+      </div>
+      <div class="guide-card">
+        <div class="gc-header"><span class="gc-num">04</span><h3>App &amp; Browser Control</h3></div>
+        <p>Open, close, and switch between applications. Control your browser — open URLs, search the web, fill forms — without touching the keyboard.</p>
+        <div class="cmd-example"><span class="c-g">&gt;</span> "Open YouTube and search for lo-fi beats"</div>
+      </div>
+      <div class="guide-card">
+        <div class="gc-header"><span class="gc-num">05</span><h3>Switching AI Models</h3></div>
+        <p>Say which model you want — GPT-4o, Claude, Gemini, or a local Ollama model. AJ switches instantly mid-conversation.</p>
+        <div class="cmd-example"><span class="c-g">&gt;</span> "Switch to Claude and help me write this email"</div>
+      </div>
+      <div class="guide-card">
+        <div class="gc-header"><span class="gc-num">06</span><h3>Deep Research Mode</h3></div>
+        <p>AJ deploys live web crawlers, scrapes documentation, and synthesizes full research reports directly into your workspace.</p>
+        <div class="cmd-example"><span class="c-g">&gt;</span> "Research the top 5 React component libraries in 2026"</div>
+      </div>
+      <div class="guide-card">
+        <div class="gc-header"><span class="gc-num">07</span><h3>Mobile Device Control</h3></div>
+        <p>With AJ's Android bridge, read incoming notifications, push files wirelessly, and launch mobile apps — all from your PC.</p>
+        <div class="cmd-example"><span class="c-g">&gt;</span> "Push this PDF to my phone"</div>
+      </div>
+      <div class="guide-card">
+        <div class="gc-header"><span class="gc-num">08</span><h3>WhatsApp Automation</h3></div>
+        <p>Schedule and dispatch WhatsApp messages autonomously. AJ bypasses the browser to send messages directly.</p>
+        <div class="cmd-example"><span class="c-g">&gt;</span> "Send meeting notes to the AJ group"</div>
+      </div>
+    </div>
+
+    <div class="voice-commands-box">
+      <h3>Quick Voice Command Reference <span class="blue-text">— Say these anytime</span></h3>
+      <div class="vc-grid">
+        <div class="vc-item"><span class="vc-cmd">"Hey AJ, open [app]"</span><span class="vc-desc">Launch any application</span></div>
+        <div class="vc-item"><span class="vc-cmd">"Hey AJ, find files about [topic]"</span><span class="vc-desc">Search your entire system</span></div>
+        <div class="vc-item"><span class="vc-cmd">"Hey AJ, read my screen"</span><span class="vc-desc">OCR + AI analysis of current screen</span></div>
+        <div class="vc-item"><span class="vc-cmd">"Hey AJ, summarise my emails"</span><span class="vc-desc">Read &amp; summarise unread emails</span></div>
+        <div class="vc-item"><span class="vc-cmd">"Hey AJ, set a reminder at [time]"</span><span class="vc-desc">Create timed reminders</span></div>
+        <div class="vc-item"><span class="vc-cmd">"Hey AJ, research [topic]"</span><span class="vc-desc">Launch deep research mode</span></div>
+        <div class="vc-item"><span class="vc-cmd">"Hey AJ, take a screenshot"</span><span class="vc-desc">Capture and save screen</span></div>
+        <div class="vc-item"><span class="vc-cmd">"Hey AJ, go offline"</span><span class="vc-desc">Switch to local AI model</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DOCS ═══ -->
+  <section class="docs-section" id="docs">
+    <div class="section-tag"><span>📚 DOCUMENTATION</span></div>
+    <h2 class="section-title">AJ Assistant <span class="blue-text">Docs.</span></h2>
+    <p class="docs-sub">Full technical reference for AJ Assistant. Start with the Quickstart or explore the full API.</p>
+    <div class="docs-grid">
+      <a href="#install" class="doc-card">
+        <div class="doc-icon">🚀</div>
+        <h4>Quickstart</h4>
+        <p>Install AJ, configure your mic, and say your first command in under 5 minutes.</p>
+        <span class="doc-link">Read guide →</span>
+      </a>
+      <a href="#guide" class="doc-card">
+        <div class="doc-icon">🗣️</div>
+        <h4>Voice Commands</h4>
+        <p>Full reference of all supported voice commands, syntax, and usage patterns.</p>
+        <span class="doc-link">View commands →</span>
+      </a>
+      <a href="#" class="doc-card">
+        <div class="doc-icon">🔌</div>
+        <h4>API Reference</h4>
+        <p>Integrate AJ into your own apps using our REST API and WebSocket bridge.</p>
+        <span class="doc-link">Explore API →</span>
+      </a>
+      <a href="#" class="doc-card">
+        <div class="doc-icon">🤖</div>
+        <h4>AI Model Config</h4>
+        <p>Configure GPT-4o, Claude, Gemini, and local Ollama models. Set defaults per task type.</p>
+        <span class="doc-link">Configure models →</span>
+      </a>
+      <a href="#" class="doc-card">
+        <div class="doc-icon">📱</div>
+        <h4>Mobile Bridge Setup</h4>
+        <p>Connect your Android device to AJ Desktop for full cross-device control.</p>
+        <span class="doc-link">Setup guide →</span>
+      </a>
+      <a href="#" class="doc-card">
+        <div class="doc-icon">🧠</div>
+        <h4>Memory &amp; Context</h4>
+        <p>Understand how AJ's persistent memory works and how to manage saved contexts.</p>
+        <span class="doc-link">Learn more →</span>
+      </a>
+      <a href="#" class="doc-card">
+        <div class="doc-icon">🔐</div>
+        <h4>Privacy &amp; Local Mode</h4>
+        <p>Run AJ completely offline. No data leaves your machine in local-only mode.</p>
+        <span class="doc-link">Read docs →</span>
+      </a>
+      <a href="#" class="doc-card">
+        <div class="doc-icon">⚙️</div>
+        <h4>Settings Reference</h4>
+        <p>Complete settings panel reference — wake word, hotkeys, model selection, and more.</p>
+        <span class="doc-link">View settings →</span>
+      </a>
+      <a href="#" class="doc-card">
+        <div class="doc-icon">🐛</div>
+        <h4>Troubleshooting</h4>
+        <p>Common issues, mic fixes, installation errors, and how to reset AJ to defaults.</p>
+        <span class="doc-link">Fix issues →</span>
+      </a>
+    </div>
+    <div class="docs-changelog">
+      <h3>Recent Changelog</h3>
+      <div class="changelog-list">
+        <div class="cl-item"><span class="cl-ver">v1.0.0</span><span class="cl-badge new">New</span><span class="cl-text">Initial release — Desktop, Mobile Bridge, Hybrid AI</span></div>
+        <div class="cl-item"><span class="cl-ver">v0.9.5</span><span class="cl-badge fix">Fix</span><span class="cl-text">Wake word false-positive reduction improved by 40%</span></div>
+        <div class="cl-item"><span class="cl-ver">v0.9.0</span><span class="cl-badge new">New</span><span class="cl-text">Added Ollama local model support — fully offline mode</span></div>
+        <div class="cl-item"><span class="cl-ver">v0.8.2</span><span class="cl-badge fix">Fix</span><span class="cl-text">Screen OCR accuracy improvements on 4K displays</span></div>
+        <div class="cl-item"><span class="cl-ver">v0.8.0</span><span class="cl-badge new">New</span><span class="cl-text">Hindi &amp; multilingual voice input added</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ POLICIES ═══ -->
+  <section class="policies-section" id="policies">
+    <div class="section-tag"><span>📄 LEGAL</span></div>
+    <h2 class="section-title">Policies &amp; <span class="blue-text">Terms.</span></h2>
+
+    <div class="policy-tabs">
+      <button class="pol-tab active" data-pol="privacy">Privacy Policy</button>
+      <button class="pol-tab" data-pol="terms">Terms of Service</button>
+      <button class="pol-tab" data-pol="refund">Refund Policy</button>
+      <button class="pol-tab" data-pol="activation">Activation Policy</button>
+    </div>
+
+    <div class="policy-content" id="pol-privacy">
+      <div class="policy-box">
+        <p class="pol-updated">Last updated: August 2026</p>
+        <div class="pol-section"><h4>1. Data We Collect</h4><p>AJ Assistant collects only what is necessary to provide the service: your email address for account management, voice commands (processed locally or via your chosen cloud AI provider), and crash/error logs for debugging. We do not sell your data to any third party.</p></div>
+        <div class="pol-section"><h4>2. Voice Data</h4><p>Voice commands sent to cloud AI providers (OpenAI, Anthropic, Google) are governed by their respective privacy policies. In local/offline mode, all voice data stays on your device and never leaves. We strongly recommend offline mode for sensitive tasks.</p></div>
+        <div class="pol-section"><h4>3. Screen Data</h4><p>Screen capture for the "Read my screen" feature is processed entirely locally. Screenshots are never uploaded to our servers. When using cloud AI for screen analysis, only the extracted text (OCR output) is sent, not the raw image.</p></div>
+        <div class="pol-section"><h4>4. File Access</h4><p>AJ requests access to your file system only when you issue a file-related command. We do not index, scan, or upload your files without explicit voice instruction from you.</p></div>
+        <div class="pol-section"><h4>5. Contact</h4><p>For privacy concerns, email us at <a href="mailto:privacy@ajassistant.in" class="blue-link">privacy@ajassistant.in</a></p></div>
+      </div>
+    </div>
+
+    <div class="policy-content hidden" id="pol-terms">
+      <div class="policy-box">
+        <p class="pol-updated">Last updated: August 2026</p>
+        <div class="pol-section"><h4>1. License</h4><p>AJ Assistant grants you a non-exclusive, non-transferable license to use the software on the number of devices specified by your license tier. Redistribution, reverse engineering, or resale of the software is strictly prohibited.</p></div>
+        <div class="pol-section"><h4>2. Acceptable Use</h4><p>AJ Assistant may not be used for any illegal activity, automation of harmful actions, unauthorized access to computer systems, or harassment. We reserve the right to terminate accounts violating these terms without refund.</p></div>
+        <div class="pol-section"><h4>3. AI-Generated Content</h4><p>AJ Assistant uses third-party AI models. We are not responsible for the accuracy, legality, or appropriateness of AI-generated responses. Always verify AI output before acting on it.</p></div>
+        <div class="pol-section"><h4>4. Limitation of Liability</h4><p>AJ Assistant is provided "as is." We are not liable for data loss, system damage, or any indirect damages arising from use of the software. Maximum liability is limited to the amount paid in the last 30 days.</p></div>
+        <div class="pol-section"><h4>5. Governing Law</h4><p>These terms are governed by the laws of India. Any disputes shall be resolved in the courts of Ahmedabad, Gujarat.</p></div>
+      </div>
+    </div>
+
+    <div class="policy-content hidden" id="pol-refund">
+      <div class="policy-box">
+        <p class="pol-updated">Last updated: August 2026</p>
+        <div class="pol-section"><h4>7-Day Refund Window</h4><p>We offer a full refund within <strong>7 days</strong> of purchase — no questions asked. If AJ doesn't work on your system or doesn't meet your expectations, email us and we'll refund within 3 business days.</p></div>
+        <div class="pol-section"><h4>How to Request</h4><p>Email <a href="mailto:support@ajassistant.in" class="blue-link">support@ajassistant.in</a> with your order ID and reason. Refunds are processed via the original payment method (UPI, card, etc.) within 3–5 business days.</p></div>
+        <div class="pol-section"><h4>Non-Refundable Cases</h4><p>Refunds are not available after the 7-day window, for enterprise/custom builds, or if the account has been found to violate our Terms of Service.</p></div>
+        <div class="pol-section"><h4>Partial Refunds</h4><p>Annual plans refunded after 7 days may receive a pro-rated refund at our discretion. Contact support to discuss your case.</p></div>
+      </div>
+    </div>
+
+    <div class="policy-content hidden" id="pol-activation">
+      <div class="policy-box">
+        <p class="pol-updated">Last updated: August 2026</p>
+        <div class="pol-section"><h4>Instant Activation</h4><p>Your PRO account is activated the moment payment is confirmed. Log in with the same email used at checkout — no license key, no activation code, no waiting.</p></div>
+        <div class="pol-section"><h4>Email Confirmation</h4><p>A payment receipt is emailed to you automatically. If you don't see it within 5 minutes, check your Spam/Junk folder. Add <code>noreply@ajassistant.in</code> to your contacts to prevent this.</p></div>
+        <div class="pol-section"><h4>Device Limits</h4><p>Free: 1 device. Pro: 2 devices. Team: 5 devices. Enterprise: unlimited. To move a license to a new device, log out on the old one first.</p></div>
+        <div class="pol-section"><h4>Subscription Renewal</h4><p>Annual subscriptions renew automatically unless cancelled 7 days before renewal date. You'll receive an email reminder 14 days before renewal.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SUPPORT ═══ -->
+  <section class="support-section" id="support">
+    <div class="section-tag"><span>🛟 HELP CENTER</span></div>
+    <h2 class="section-title">We've got your <span class="blue-text">back.</span></h2>
+    <p class="support-sub">Stuck somewhere? We respond to all queries within 24 hours.</p>
+
+    <div class="support-grid">
+      <div class="support-channels">
+        <h3>Contact Us</h3>
+        <div class="channel-cards">
+          <a href="https://wa.me/919999999999" class="channel-card wa">
+            <div class="ch-icon">💬</div>
+            <div class="ch-body"><h4>WhatsApp Support</h4><p>Chat with us directly. Fastest response for urgent issues.</p><span class="ch-badge">Usually replies in &lt; 1 hour</span></div>
+          </a>
+          <a href="mailto:support@ajassistant.in" class="channel-card">
+            <div class="ch-icon">✉️</div>
+            <div class="ch-body"><h4>Email Support</h4><p>Send detailed queries with screenshots or logs.</p><span class="ch-badge">Response within 24 hours</span></div>
+          </a>
+          <a href="#" class="channel-card">
+            <div class="ch-icon">💬</div>
+            <div class="ch-body"><h4>Discord Community</h4><p>Join 500+ AJ users. Get tips, share workflows, report bugs.</p><span class="ch-badge">Join the server →</span></div>
+          </a>
+        </div>
+      </div>
+
+      <div class="faq-box">
+        <h3>Frequently Asked Questions</h3>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-q">AJ doesn't respond to "Hey AJ" — what do I do?</button>
+            <div class="faq-a">Check that your microphone is selected in AJ Settings → Audio. Try increasing the wake word sensitivity slider. Ensure no other app is blocking mic access.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Can AJ work completely offline?</button>
+            <div class="faq-a">Yes. Go to Settings → AI Model → select any local Ollama model. AJ will run 100% on-device with no internet required for AI processing.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Is my voice data stored anywhere?</button>
+            <div class="faq-a">No. Voice data processed locally stays on your device. Cloud AI queries are sent directly to your chosen provider (OpenAI, Anthropic, etc.) and not stored by us.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">How do I upgrade to PRO?</button>
+            <div class="faq-a">Go to the Pricing section, choose your plan, and pay. Your account upgrades instantly — just log in with the same email. No license key needed.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">Does AJ support Hindi voice commands?</button>
+            <div class="faq-a">Yes! AJ natively supports Hindi and English. You can mix both in the same command — e.g., "Hey AJ, mera inbox summarise kar do."</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">I paid but my account isn't showing PRO?</button>
+            <div class="faq-a">Log out and log back in with the exact email used at checkout. If it still shows Free, email support@ajassistant.in with your payment receipt.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ JOIN US ═══ -->
+  <section class="join-section" id="join">
+    <div class="section-tag"><span>🤝 COMMUNITY</span></div>
+    <h2 class="section-title">Join the <span class="blue-text">AJ Movement.</span></h2>
+    <p class="join-sub">Be part of the team building the future of voice-first computing in India and beyond.</p>
+
+    <div class="join-grid">
+      <div class="join-card beta">
+        <div class="jc-tag">🧪 BETA PROGRAM</div>
+        <h3>Become a Beta Tester</h3>
+        <p>Get early access to new features before anyone else. Shape AJ's roadmap with your feedback. Beta testers get <strong>free PRO access</strong> while in the program.</p>
+        <div class="join-form">
+          <input type="email" class="join-input" placeholder="your@email.com"/>
+          <button class="btn-primary" style="padding:12px 24px;font-size:13px">Join Beta →</button>
+        </div>
+        <p class="join-small">We'll email you within 48 hours with your beta invite.</p>
+      </div>
+
+      <div class="join-card community">
+        <div class="jc-tag">💬 COMMUNITY</div>
+        <h3>Join Our Discord</h3>
+        <p>Connect with 500+ AJ users. Share voice command workflows, get help, post feature requests, and see what others are building with AJ.</p>
+        <a href="#" class="btn-secondary" style="width:100%;justify-content:center;margin-top:16px">Join Discord Server</a>
+      </div>
+
+      <div class="join-card contribute">
+        <div class="jc-tag">👨‍💻 CONTRIBUTE</div>
+        <h3>Build with AJ</h3>
+        <p>Are you a developer? AJ's plugin API lets you build custom voice commands and workflows. Open source contributions are welcome — join us on GitHub.</p>
+        <a href="#" class="btn-secondary" style="width:100%;justify-content:center;margin-top:16px">View on GitHub</a>
+      </div>
+
+      <div class="join-card careers">
+        <div class="jc-tag">💼 CAREERS</div>
+        <h3>Work at AJ</h3>
+        <p>We're a small team building big things from Ahmedabad. Looking for exceptional engineers, designers, and ML researchers who care about voice AI.</p>
+        <a href="mailto:careers@ajassistant.in" class="btn-secondary" style="width:100%;justify-content:center;margin-top:16px">Send Resume</a>
+      </div>
+    </div>
+
+    <div class="join-stats">
+      <div class="stat-item"><span class="stat-num">2,000+</span><span class="stat-label">Beta Users</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><span class="stat-num">500+</span><span class="stat-label">Discord Members</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><span class="stat-num">12</span><span class="stat-label">Team Members</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><span class="stat-num">🇮🇳</span><span class="stat-label">Made in India</span></div>
+    </div>
+  </section>
+
+  <!-- ═══ DOWNLOAD ═══ -->
+  <section class="download-section" id="download">
+    <div class="dl-glow"></div>
+    <div class="dl-content">
+      <div class="section-tag"><span>🚀 GET STARTED</span></div>
+      <h2 class="dl-title">Your High-Performance<br/>Desktop Assistant</h2>
+      <p class="dl-desc">Command your PC completely hands-free. Simply speak and let AJ manage your files, analyze your screen, and control your applications with Zero Effort.</p>
+      <a href="#" class="btn-primary btn-large">Download AJ Assistant<span class="btn-tag">Free Early Access</span></a>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#home" class="nav-logo footer-logo">
+          <svg class="logo-icon" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="4" width="24" height="24" rx="6" stroke="#00f0ff" stroke-width="2"/>
+            <circle cx="16" cy="16" r="5" fill="#00f0ff"/>
+            <circle cx="16" cy="16" r="2" fill="#050505"/>
+            <line x1="16" y1="4" x2="16" y2="9" stroke="#00f0ff" stroke-width="2"/>
+            <line x1="16" y1="23" x2="16" y2="28" stroke="#00f0ff" stroke-width="2"/>
+            <line x1="4" y1="16" x2="9" y2="16" stroke="#00f0ff" stroke-width="2"/>
+            <line x1="23" y1="16" x2="28" y2="16" stroke="#00f0ff" stroke-width="2"/>
+          </svg>
+          <span class="logo-text">AJ Assistant</span>
+        </a>
+        <p class="footer-tagline">Voice First AI Assistant</p>
+        <p class="footer-desc">A native desktop client for local file management, deep research, and OS-level automation.</p>
+        <div class="footer-socials">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>RESOURCES</h5>
+        <a href="#about">About AJ Assistant</a>
+        <a href="#docs">Documentation</a>
+        <a href="#guide">Usage Guide</a>
+        <a href="#support">Support</a>
+        <a href="#policies">Refund Policy</a>
+        <a href="#policies">Privacy Policy</a>
+        <a href="#policies">Terms of Service</a>
+        <a href="#policies">Activation Policy</a>
+      </div>
+      <div class="footer-col">
+        <h5>ECOSYSTEM</h5>
+        <a href="#pricing">Pricing &amp; Tiers</a>
+        <a href="#download">Download AJ</a>
+        <a href="#install">How-to-Install</a>
+        <a href="#">AJ Desktop v1</a>
+        <a href="#">CLI Core</a>
+        <a href="#">Mobile App</a>
+        <a href="#">AJ-Zero</a>
+        <a href="#join">Join Us</a>
+      </div>
+      <div class="footer-col">
+        <h5>SYSTEM STATUS</h5>
+        <div class="status-row">
+          <span class="status-green-dot"></span>
+          <span>Network</span>
+          <span class="status-badge">Operational</span>
+        </div>
+        <div class="status-row" style="margin-top:8px">
+          <span class="status-green-dot"></span>
+          <span>AI Services</span>
+          <span class="status-badge">Operational</span>
+        </div>
+        <div class="version-row" style="margin-top:16px">
+          <span class="version-label">AJ Version</span>
+          <span class="version-val">AJ Desktop v1.0.0</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 AJ Assistant by AJ. All rights reserved.</p>
+      <p>Engineered with ❤️ by <a href="#">AJ</a> in 🇮🇳 India</p>
+    </div>
+  </footer>
+
+  <!-- WHATSAPP BUTTON -->
+  <a href="https://wa.me/918128486080" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="WhatsApp Support">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.564 4.14 1.547 5.878L.057 23.5l5.77-1.512A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.847 0-3.587-.496-5.087-1.362l-.364-.216-3.425.898.913-3.338-.236-.384A9.947 9.947 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+    <span class="wa-tooltip">Chat Support</span>
+  </a>
+
+  <script>
+'use strict';
+
+/* ══════════════════════════════════════════════
+   AJ ASSISTANT — script.js  (Full Upgraded)
+══════════════════════════════════════════════ */
+
+/* ─── 1. SCROLL PROGRESS BAR ─── */
+const progressBar = document.getElementById('scrollProgress');
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  progressBar.style.width = pct + '%';
+}, { passive: true });
+
+/* ─── 2. NAVBAR SCROLL + ACTIVE LINKS ─── */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 20);
+}, { passive: true });
+
+/* ─── 3. HAMBURGER ─── */
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => {
+  const open = navLinks.classList.toggle('open');
+  const spans = hamburger.querySelectorAll('span');
+  if (open) {
+    spans[0].style.transform = 'translateY(7px) rotate(45deg)';
+    spans[1].style.opacity = '0';
+    spans[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+  } else {
+    spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+  }
+});
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  navLinks.classList.remove('open');
+  hamburger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+}));
+
+/* ─── 4. CUSTOM CURSOR WITH GLOW TRAIL ─── */
+const dot  = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+window.addEventListener('mousedown', () => dot.classList.add('clicking'));
+window.addEventListener('mouseup',   () => dot.classList.remove('clicking'));
+
+/* smooth ring follow */
+(function animCursor() {
+  rx += (mx - rx) * 0.14;
+  ry += (my - ry) * 0.14;
+  dot.style.left  = mx + 'px';
+  dot.style.top   = my + 'px';
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animCursor);
+})();
+
+/* hover scale on interactive elements */
+document.querySelectorAll('a, button, .dc-chip, .feat-card, .pricing-card, .pm-badge').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+});
+
+/* Glow trail particles on move */
+let lastTrail = 0;
+window.addEventListener('mousemove', e => {
+  const now = Date.now();
+  if (now - lastTrail < 40) return;
+  lastTrail = now;
+  const p = document.createElement('div');
+  p.style.cssText = `
+    position:fixed;width:4px;height:4px;border-radius:50%;pointer-events:none;z-index:9990;
+    background:#00f0ff;box-shadow:0 0 8px #00f0ff;
+    left:${e.clientX}px;top:${e.clientY}px;
+    transform:translate(-50%,-50%);opacity:.7;
+    transition:all .6s ease;
+  `;
+  document.body.appendChild(p);
+  requestAnimationFrame(() => { p.style.opacity = '0'; p.style.transform = 'translate(-50%,-50%) scale(3)'; });
+  setTimeout(() => p.remove(), 650);
+}, { passive: true });
+
+/* ─── 5. ANIMATED GRID CANVAS ─── */
+(function () {
+  const canvas = document.getElementById('gridCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, cols, rows, nodes = [], t = 0;
+  const CELL = 60;
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    cols = Math.ceil(W / CELL) + 1;
+    rows = Math.ceil(H / CELL) + 1;
+    nodes = [];
+    for (let r = 0; r <= rows; r++)
+      for (let c = 0; c <= cols; c++)
+        nodes.push({ bx: c*CELL, by: r*CELL, px: c*CELL, py: r*CELL, phase: Math.random()*Math.PI*2, amp: 2+Math.random()*3 });
+  }
+
+  function gn(c, r) {
+    if (c<0||r<0||c>cols||r>rows) return null;
+    return nodes[r*(cols+1)+c];
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.012;
+    const cx = W/2, cy = H*0.5;
+    nodes.forEach(n => {
+      const dx=n.bx-cx, dy=n.by-cy, dist=Math.sqrt(dx*dx+dy*dy);
+      const inf = Math.max(0, 1 - dist/(Math.max(W,H)*.6));
+      const wave = Math.sin(t + n.phase + dist*.008) * n.amp * inf;
+      n.px = n.bx + wave*(dx/(dist+1));
+      n.py = n.by + wave*(dy/(dist+1));
+    });
+    const RGB = '0,240,255';
+    for (let r = 0; r <= rows; r++) {
+      ctx.beginPath();
+      for (let c = 0; c <= cols; c++) {
+        const n = gn(c,r); if(!n) continue;
+        const dx=n.px-cx, dy=n.py-cy, dist=Math.sqrt(dx*dx+dy*dy);
+        const a = Math.max(0, .18-.15*(dist/(Math.min(W,H)*.7)));
+        ctx.strokeStyle = `rgba(${RGB},${a.toFixed(3)})`;
+        c===0 ? ctx.moveTo(n.px,n.py) : ctx.lineTo(n.px,n.py);
+      }
+      ctx.lineWidth = .8; ctx.stroke();
+    }
+    for (let c = 0; c <= cols; c++) {
+      ctx.beginPath();
+      for (let r = 0; r <= rows; r++) {
+        const n = gn(c,r); if(!n) continue;
+        const dx=n.px-cx, dy=n.py-cy, dist=Math.sqrt(dx*dx+dy*dy);
+        const a = Math.max(0, .18-.15*(dist/(Math.min(W,H)*.7)));
+        ctx.strokeStyle = `rgba(${RGB},${a.toFixed(3)})`;
+        r===0 ? ctx.moveTo(n.px,n.py) : ctx.lineTo(n.px,n.py);
+      }
+      ctx.lineWidth = .8; ctx.stroke();
+    }
+    for (let r=0;r<=rows;r+=2) for (let c=0;c<=cols;c+=2) {
+      const n=gn(c,r); if(!n) continue;
+      const dx=n.px-cx, dy=n.py-cy, dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist>Math.min(W,H)*.45) continue;
+      ctx.beginPath();
+      ctx.arc(n.px,n.py,1.5,0,Math.PI*2);
+      ctx.fillStyle = `rgba(${RGB},${((1-dist/(Math.min(W,H)*.45))*.6).toFixed(3)})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  new ResizeObserver(resize).observe(canvas.parentElement);
+  resize(); draw();
+})();
+
+/* ─── 6. FLOATING PARTICLES ─── */
+(function () {
+  const container = document.getElementById('particlesContainer');
+  if (!container) return;
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 1 + Math.random() * 3;
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      width:${size}px;height:${size}px;
+      animation-duration:${8+Math.random()*14}s;
+      animation-delay:${Math.random()*12}s;
+      opacity:0;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+/* ─── 7. TEXT SCRAMBLE ON HERO TITLES ─── */
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+function scramble(el, finalText, duration = 1200) {
+  let start = null;
+  const len = finalText.length;
+  function step(ts) {
+    if (!start) start = ts;
+    const progress = Math.min((ts - start) / duration, 1);
+    const revealedCount = Math.floor(progress * len);
+    let display = '';
+    for (let i = 0; i < len; i++) {
+      if (i < revealedCount) {
+        display += finalText[i];
+      } else if (finalText[i] === ' ' || finalText[i] === '.') {
+        display += finalText[i];
+      } else {
+        display += CHARS[Math.floor(Math.random() * CHARS.length)];
+      }
+    }
+    el.textContent = display;
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = finalText;
+  }
+  requestAnimationFrame(step);
+}
+
+const meetEl = document.getElementById('scrambleMeet');
+const nameEl = document.getElementById('scrambleName');
+if (meetEl && nameEl) {
+  setTimeout(() => scramble(meetEl, 'MEET', 900), 200);
+  setTimeout(() => scramble(nameEl, 'AJ Assistant.', 1200), 500);
+}
+
+/* Glitch on about section heading on scroll-in */
+const glitchEl = document.getElementById('glitchMeet');
+let glitchFired = false;
+new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting && !glitchFired) {
+    glitchFired = true;
+    glitchEl.classList.add('glitch');
+    setTimeout(() => glitchEl.classList.remove('glitch'), 500);
+  }
+}, { threshold: 0.5 }).observe(glitchEl || document.body);
+
+/* ─── 8. DEMO MIC BUTTON ─── */
+const micBtn = document.getElementById('micBtn');
+const micLabel = document.getElementById('micLabel');
+const demoWave = document.getElementById('demoWave');
+const termOut = document.getElementById('terminalOutput');
+const termBody = document.getElementById('terminalBody');
+
+const responses = {
+  'Open Chrome browser':        ['Launching Chrome…', 'Chrome is open ✓'],
+  'Summarise my emails':        ['Accessing inbox…', 'Reading 12 unread emails…', '3 important threads found. Summary ready ✓'],
+  'Search project files':       ['Scanning directories…', 'Found 24 files matching "project" ✓'],
+  'Read my screen':             ['Capturing screen…', 'OCR in progress…', 'Screen content analysed ✓'],
+  'Push file to phone':         ['Connecting to device…', 'Transferring file…', 'File synced to your phone ✓'],
+  'Set a reminder for 5 PM':    ['Creating reminder…', 'Reminder set for 17:00 IST ✓'],
+};
+const defaultCmds = Object.keys(responses);
+
+let isListening = false, demoTimeout;
+
+function runDemoCommand(cmd) {
+  const steps = responses[cmd] || ['Processing…', 'Done ✓'];
+  termOut.textContent = `> ${cmd}`;
+  // clear previous extra lines
+  termBody.querySelectorAll('.t-extra').forEach(n => n.remove());
+  micBtn.classList.add('listening');
+  demoWave.classList.add('active');
+  micLabel.textContent = 'AJ is processing…';
+
+  steps.forEach((step, i) => {
+    setTimeout(() => {
+      const line = document.createElement('div');
+      line.className = 't-line t-extra';
+      line.innerHTML = `<span class="t-prompt">AJ &gt;</span><span class="t-out ${step.includes('✓')?'t-success':''}">${step}</span>`;
+      termBody.insertBefore(line, termBody.lastElementChild);
+      if (i === steps.length - 1) {
+        micBtn.classList.remove('listening');
+        demoWave.classList.remove('active');
+        micLabel.textContent = 'Click to activate AJ';
+        isListening = false;
+      }
+    }, (i + 1) * 900);
+  });
+}
+
+micBtn.addEventListener('click', () => {
+  if (isListening) return;
+  isListening = true;
+  micBtn.classList.add('listening');
+  demoWave.classList.add('active');
+  micLabel.textContent = 'Listening… speak now';
+  clearTimeout(demoTimeout);
+  // Simulate picking up a random command after 1.5s
+  demoTimeout = setTimeout(() => {
+    const cmd = defaultCmds[Math.floor(Math.random() * defaultCmds.length)];
+    runDemoCommand(cmd);
+  }, 1500);
+});
+
+// Chip buttons
+document.querySelectorAll('.dc-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    if (isListening) return;
+    isListening = true;
+    runDemoCommand(chip.dataset.cmd);
+  });
+});
+
+/* ─── 9. PHONE TYPEWRITER ─── */
+(function () {
+  const el = document.getElementById('cmdText');
+  if (!el) return;
+  const cmds = ['Open Chrome browser','Summarise my emails','Search project files','Read my screen','Push file to phone','Set reminder 5 PM'];
+  let ci=0, ci2=0, del=false;
+  function loop() { setTimeout(type, del?40:80); }
+  function type() {
+    const cmd=cmds[ci];
+    if (!del) { el.textContent=cmd.slice(0,++ci2); if(ci2===cmd.length){setTimeout(()=>{del=true;loop()},1800);return;} }
+    else { el.textContent=cmd.slice(0,--ci2); if(ci2===0){del=false;ci=(ci+1)%cmds.length;} }
+    loop();
+  }
+  loop();
+})();
+
+/* ─── 10. SCROLL REVEAL + STAGGERED CARDS ─── */
+(function () {
+  const targets = document.querySelectorAll('.feat-card, .footer-col, .pricing-card, .mobile-content, .dl-content, .about-content, .section-title, .demo-box, .pm-badge');
+  targets.forEach(el => el.classList.add('reveal'));
+
+  // Stagger feat cards
+  document.querySelectorAll('.feat-card').forEach((card, i) => {
+    card.style.transitionDelay = (i * 100) + 'ms';
+  });
+
+  new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }).observe(
+    ...Array.from(targets).map(t => t) // observe all
+  );
+
+  // re-create with proper forEach
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  targets.forEach(t => io.observe(t));
+})();
+
+/* ─── 11. FEAT CARD RADIAL HOVER GLOW ─── */
+document.querySelectorAll('.feat-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = ((e.clientX-r.left)/r.width*100).toFixed(1);
+    const y = ((e.clientY-r.top)/r.height*100).toFixed(1);
+    card.style.background = `radial-gradient(circle at ${x}% ${y}%,rgba(0,240,255,.07),#0d0d0d 60%)`;
+  });
+  card.addEventListener('mouseleave', () => card.style.background = '');
+});
+
+/* ─── 12. ACTIVE NAV HIGHLIGHT ─── */
+(function () {
+  const sections = document.querySelectorAll('section[id]');
+  const links    = document.querySelectorAll('.nav-links a');
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === `#${id}`));
+      }
+    });
+  }, { threshold: 0.4 }).observe(...Array.from(sections));
+
+  const io2 = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === `#${id}`));
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => io2.observe(s));
+})();
+
+/* ─── 13. ABOUT PARALLAX GRID ─── */
+(function () {
+  const bg = document.querySelector('.about-grid-bg');
+  if (!bg) return;
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const rect = bg.parentElement.getBoundingClientRect();
+        bg.style.transform = `translateY(${-rect.top * 0.2}px)`;
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+})();
+
+
+/* ─── PLATFORM TABS ─── */
+document.querySelectorAll('.ptab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.install-content').forEach(c => c.classList.add('hidden'));
+    tab.classList.add('active');
+    const target = document.getElementById('tab-' + tab.dataset.tab);
+    if (target) target.classList.remove('hidden');
+  });
+});
+
+/* ─── POLICY TABS ─── */
+document.querySelectorAll('.pol-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.pol-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.policy-content').forEach(c => c.classList.add('hidden'));
+    tab.classList.add('active');
+    const target = document.getElementById('pol-' + tab.dataset.pol);
+    if (target) target.classList.remove('hidden');
+  });
+});
+
+/* ─── FAQ ACCORDION ─── */
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const isOpen = btn.classList.contains('open');
+    document.querySelectorAll('.faq-q').forEach(b => {
+      b.classList.remove('open');
+      const a = b.nextElementSibling;
+      if (a) a.classList.remove('open');
+    });
+    if (!isOpen) {
+      btn.classList.add('open');
+      const ans = btn.nextElementSibling;
+      if (ans) ans.classList.add('open');
+    }
+  });
+});
+
+</script>
+</body>
+</html>
